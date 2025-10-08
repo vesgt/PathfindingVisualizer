@@ -14,7 +14,7 @@ while (!Raylib.WindowShouldClose())
     Raylib.BeginDrawing();
     Raylib.ClearBackground(Color.Black);
 
-    
+    grid.Draw();
 
     Raylib.EndDrawing();
 }

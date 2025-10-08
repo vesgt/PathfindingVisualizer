@@ -1,4 +1,7 @@
+using System.Numerics;
+using PathfindingVisualizer.Algorithms;
 using Raylib_cs;
+using Path = PathfindingVisualizer.Algorithms.Path;
 
 namespace PathfindingVisualizer.Grid;
 
@@ -7,6 +10,9 @@ public class Grid
     public Node[,] Nodes { get; set; }
     public int GridSize { get; }     // number of nodes per axis
     public int CellSize { get; }     // pixel width/height of each node
+    public Node GoalNode;
+    public Node StartNode;
+    public Path Path { get; set; }
 
     public Grid(int gridSize, int cellSize)
     {
@@ -17,6 +23,18 @@ public class Grid
         for (var x = 0; x < GridSize; x++)
         for (var y = 0; y < GridSize; y++)
             Nodes[x, y] = new Node(x, y);
+
+        GoalNode = GetRandomNode();
+        StartNode = GetRandomNode();
+        
+        GoalNode.NodeType = NodeType.Goal;
+        StartNode.NodeType = NodeType.Start;
+
+        var astar = new AStar
+        {
+            Grid = this
+        };
+        Path = astar.CalculatePath();
     }
     
     public Node? GetNode(int x, int y)
@@ -45,8 +63,8 @@ public class Grid
             var ny = y + directions[i, 1];
             var neighbor = GetNode(nx, ny);
             
-            if (neighbor != null && neighbor.Value.NodeType != NodeType.Obstacle)
-                neighbors.Add(neighbor.Value);
+            if (neighbor != null && neighbor.NodeType != NodeType.Obstacle)
+                neighbors.Add(neighbor);
         }
 
         return neighbors;
@@ -59,7 +77,8 @@ public class Grid
             for (var y = 0; y < GridSize; y++)
             {
                 var node = Nodes[x, y];
-                var color = node.NodeType switch
+                
+                var color = (Path.NodePath.Contains(node) && node != StartNode && node != GoalNode) ? Color.Red : node.NodeType switch
                 {
                     NodeType.Goal => Color.Gold,
                     NodeType.Obstacle => Color.Black,
