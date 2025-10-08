@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using PathfindingVisualizer.Algorithms;
 using Raylib_cs;
@@ -78,7 +81,7 @@ public class Grid
             {
                 var node = Nodes[x, y];
                 
-                var color = (Path.NodePath.Contains(node) && node != StartNode && node != GoalNode) ? Color.Red : node.NodeType switch
+                var color = Path.NodePath.Contains(node) && node != StartNode && node != GoalNode ? Color.Red : node.NodeType switch
                 {
                     NodeType.Goal => Color.Gold,
                     NodeType.Obstacle => Color.Black,
