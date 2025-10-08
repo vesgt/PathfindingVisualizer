@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
 using PathfindingVisualizer.Algorithms;
 using Raylib_cs;
 using Path = PathfindingVisualizer.Algorithms.Path;
@@ -32,6 +28,16 @@ public class Grid
         
         GoalNode.NodeType = NodeType.Goal;
         StartNode.NodeType = NodeType.Start;
+
+        for (var i = 0; i < Nodes.Length / 3; i++)
+        {
+            var node = GetRandomNode();
+            
+            if (node == GoalNode || node == StartNode)
+                continue;
+
+            node.NodeType = NodeType.Obstacle;
+        }
 
         var astar = new AStar
         {
